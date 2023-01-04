@@ -1,8 +1,8 @@
-const Joi = require('joi');
+const Joi = require("joi");
 
 // Joi Schema
 genreJoiSchema = Joi.object({
-    name: Joi.string().required()
+  name: Joi.string().required(),
 });
 
 module.exports = genreJoiSchema;
