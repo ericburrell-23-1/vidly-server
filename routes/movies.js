@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 const validateRequest = require("../functions/validation");
 const database = require("../functions/database");
-const Movie = require("../models/movie").model;
-const Genre = require("../models/genre").model;
+const Movie = require("../models/movie").Model;
+const Genre = require("../models/genre").Model;
 const movieJoiSchema = require("../JoiSchemas/movieSchema");
 
 // Create the Movies API

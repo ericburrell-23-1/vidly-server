@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const validateRequest = require("../functions/validation");
 const database = require("../functions/database");
-const Customer = require("../models/customer").model;
+const Customer = require("../models/customer").Model;
 const customerJoiSchema = require("../JoiSchemas/customerSchema");
 
 // Create the Genres API

@@ -2,9 +2,9 @@ const express = require("express");
 const router = express.Router();
 const validateRequest = require("../functions/validation");
 const database = require("../functions/database");
-const Customer = require("../models/customer").model;
-const Movie = require("../models/movie").model;
-const Rental = require("../models/rental").model;
+const Customer = require("../models/customer").Model;
+const Movie = require("../models/movie").Model;
+const Rental = require("../models/rental").Model;
 const rentalJoiSchema = require("../JoiSchemas/rentalSchema");
 
 // const Fawn = require("fawn");

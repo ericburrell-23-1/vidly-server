@@ -1,4 +1,3 @@
-const { date } = require("joi");
 const mongoose = require("mongoose");
 const movieSchema = require("../models/movie").schema;
 const customerSchema = require("../models/customer").schema;
@@ -29,5 +28,5 @@ const rentalSchema = mongoose.Schema({
 
 const Rental = mongoose.model("Rental", rentalSchema);
 
-module.exports.model = Rental;
+module.exports.Model = Rental;
 module.exports.schema = rentalSchema;

@@ -6,6 +6,7 @@ async function create(Model, modelInfo, callback) {
     callback(result);
   } catch (ex) {
     console.log(ex.message);
+    callback(ex.message);
   }
 }
 
