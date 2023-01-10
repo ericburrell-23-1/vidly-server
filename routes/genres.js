@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const validateRequest = require("../functions/validation");
+const auth = require("../functions/auth");
+const admin = require("../functions/admin");
 const database = require("../functions/database");
 const Genre = require("../models/genre").Model;
 const genreJoiSchema = require("../JoiSchemas/genreSchema");
@@ -8,7 +10,7 @@ const genreJoiSchema = require("../JoiSchemas/genreSchema");
 // Create the Genres API
 
 // Create route
-router.post("/", (req, res) => {
+router.post("/", [auth, admin], (req, res) => {
   // Validate request
   const validResult = validateRequest(req.body, genreJoiSchema);
   if (validResult.error)
@@ -37,7 +39,7 @@ router.get("/:id", (req, res) => {
 });
 
 // Update route
-router.put("/:id", (req, res) => {
+router.put("/:id", [auth, admin], (req, res) => {
   const validResult = validateRequest(req.body, genreJoiSchema);
   if (validResult.error)
     return res
@@ -53,7 +55,7 @@ router.put("/:id", (req, res) => {
 });
 
 //Delete route
-router.delete("/:id", (req, res) => {
+router.delete("/:id", [auth, admin], (req, res) => {
   database.remove(Genre, req.params.id, (genre) => {
     if (!genre)
       return res.status(404).send("Genre with the given ID not found");

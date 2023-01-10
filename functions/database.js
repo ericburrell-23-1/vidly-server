@@ -2,7 +2,7 @@ async function create(Model, modelInfo, callback) {
   const instance = new Model(modelInfo);
   try {
     const result = await instance.save();
-    console.log(result);
+    console.log(Model.modelName, "created: ", result);
     callback(result);
   } catch (ex) {
     console.log(ex.message);
@@ -11,7 +11,7 @@ async function create(Model, modelInfo, callback) {
 }
 
 async function retrieve(Model, filter = {}, callback) {
-  const documents = await Model.find(filter).sort("name");
+  let documents = await Model.find(filter).sort("name");
   callback(documents);
 }
 

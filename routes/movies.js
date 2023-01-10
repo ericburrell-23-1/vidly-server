@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const validateRequest = require("../functions/validation");
+const auth = require("../functions/auth");
 const database = require("../functions/database");
 const Movie = require("../models/movie").Model;
 const Genre = require("../models/genre").Model;
@@ -9,7 +10,7 @@ const movieJoiSchema = require("../JoiSchemas/movieSchema");
 // Create the Movies API
 
 // Create route
-router.post("/", (req, res) => {
+router.post("/", auth, (req, res) => {
   // Validate request
   const validResult = validateRequest(req.body, movieJoiSchema);
   if (validResult.error)
@@ -55,7 +56,7 @@ router.get("/:id", (req, res) => {
 });
 
 // Update route
-router.put("/:id", (req, res) => {
+router.put("/:id", auth, (req, res) => {
   const validResult = validateRequest(req.body, movieJoiSchema);
   if (validResult.error)
     return res
@@ -88,7 +89,7 @@ router.put("/:id", (req, res) => {
 });
 
 //Delete route
-router.delete("/:id", (req, res) => {
+router.delete("/:id", auth, (req, res) => {
   database.remove(Movie, req.params.id, (movie) => {
     if (!movie)
       return res.status(404).send("Movie with the given ID not found");

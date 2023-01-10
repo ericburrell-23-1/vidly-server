@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const validateRequest = require("../functions/validation");
+const auth = require("../functions/auth");
 const database = require("../functions/database");
 const Customer = require("../models/customer").Model;
 const Movie = require("../models/movie").Model;
@@ -11,7 +12,7 @@ const rentalJoiSchema = require("../JoiSchemas/rentalSchema");
 // const mongoose = require('mongoose');
 // Fawn.init(mongoose);
 
-router.post("/", (req, res) => {
+router.post("/", auth, (req, res) => {
   // Validate Request
   const validResult = validateRequest(req.body, rentalJoiSchema);
   if (validResult.error)
