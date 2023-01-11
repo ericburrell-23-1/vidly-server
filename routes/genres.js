@@ -4,33 +4,42 @@ const validateRequest = require("../functions/validation");
 const auth = require("../functions/auth");
 const admin = require("../functions/admin");
 const database = require("../functions/database");
+//const asyncMiddleWare = require("../functions/async");
 const Genre = require("../models/genre").Model;
 const genreJoiSchema = require("../JoiSchemas/genreSchema");
 
 // Create the Genres API
 
 // Create route
-router.post("/", [auth, admin], (req, res) => {
-  // Validate request
-  const validResult = validateRequest(req.body, genreJoiSchema);
-  if (validResult.error)
-    return res
-      .status(400)
-      .send(`Error: ${validResult.error.details[0].message}.`);
+router.post(
+  "/",
+  [auth, admin],
+  /*asyncMiddleWare(*/ async (req, res) => {
+    // Validate request
+    const validResult = validateRequest(req.body, genreJoiSchema);
+    if (validResult.error)
+      return res
+        .status(400)
+        .send(`Error: ${validResult.error.details[0].message}.`);
 
-  // Save new genre
-  database.create(Genre, req.body, (result) => res.send(result));
-});
+    // Save new genre
+    await database.create(Genre, req.body, (result) => res.send(result));
+  } //)
+);
 
 // Read routes
-router.get("/", (req, res) => {
-  database.retrieve(Genre, {}, (genres) => {
-    res.send(genres);
-  });
-});
+router.get(
+  "/",
+  /*asyncMiddleWare(*/ async (req, res) => {
+    //  throw new Error("Could not get the genres.");
+    await database.retrieve(Genre, {}, (genres) => {
+      res.send(genres);
+    });
+  } //)
+);
 
-router.get("/:id", (req, res) => {
-  database.retrieve(Genre, { _id: req.params.id }, (genre) => {
+router.get("/:id", async (req, res) => {
+  await database.retrieve(Genre, { _id: req.params.id }, (genre) => {
     console.log(typeof req.params.id);
     if (!genre.length)
       return res.status(404).send("Genre with the given ID not found");
@@ -39,14 +48,14 @@ router.get("/:id", (req, res) => {
 });
 
 // Update route
-router.put("/:id", [auth, admin], (req, res) => {
+router.put("/:id", [auth, admin], async (req, res) => {
   const validResult = validateRequest(req.body, genreJoiSchema);
   if (validResult.error)
     return res
       .status(400)
       .send(`Error: ${validResult.error.details[0].message}.`);
 
-  database.update(Genre, req.params.id, req.body, (genre) => {
+  await database.update(Genre, req.params.id, req.body, (genre) => {
     if (!genre)
       return res.status(404).send("Genre with the given ID not found");
     res.send(genre);
@@ -55,8 +64,8 @@ router.put("/:id", [auth, admin], (req, res) => {
 });
 
 //Delete route
-router.delete("/:id", [auth, admin], (req, res) => {
-  database.remove(Genre, req.params.id, (genre) => {
+router.delete("/:id", [auth, admin], async (req, res) => {
+  await database.remove(Genre, req.params.id, (genre) => {
     if (!genre)
       return res.status(404).send("Genre with the given ID not found");
     res.send(genre);

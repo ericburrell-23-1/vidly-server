@@ -1,13 +1,8 @@
 async function create(Model, modelInfo, callback) {
   const instance = new Model(modelInfo);
-  try {
-    const result = await instance.save();
-    console.log(Model.modelName, "created: ", result);
-    callback(result);
-  } catch (ex) {
-    console.log(ex.message);
-    callback(ex.message);
-  }
+  const result = await instance.save();
+  console.log(Model.modelName, "created: ", result);
+  callback(result);
 }
 
 async function retrieve(Model, filter = {}, callback) {
