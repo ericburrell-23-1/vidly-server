@@ -7,6 +7,8 @@ const database = require("../functions/database");
 //const asyncMiddleWare = require("../functions/async");
 const Genre = require("../models/genre").Model;
 const genreJoiSchema = require("../JoiSchemas/genreSchema");
+const mongoose = require("mongoose");
+const validateObjectId = require("../functions/validateObjectId");
 
 // Create the Genres API
 
@@ -38,9 +40,8 @@ router.get(
   } //)
 );
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", validateObjectId, async (req, res) => {
   await database.retrieve(Genre, { _id: req.params.id }, (genre) => {
-    console.log(typeof req.params.id);
     if (!genre.length)
       return res.status(404).send("Genre with the given ID not found");
     res.send(genre);
@@ -48,7 +49,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // Update route
-router.put("/:id", [auth, admin], async (req, res) => {
+router.put("/:id", [validateObjectId, auth, admin], async (req, res) => {
   const validResult = validateRequest(req.body, genreJoiSchema);
   if (validResult.error)
     return res
@@ -64,7 +65,7 @@ router.put("/:id", [auth, admin], async (req, res) => {
 });
 
 //Delete route
-router.delete("/:id", [auth, admin], async (req, res) => {
+router.delete("/:id", [validateObjectId, auth, admin], async (req, res) => {
   await database.remove(Genre, req.params.id, (genre) => {
     if (!genre)
       return res.status(404).send("Genre with the given ID not found");

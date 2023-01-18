@@ -1,13 +1,15 @@
 const mongoose = require("mongoose");
 const winston = require("winston");
+const config = require("config");
 
 // Make connection to database
 module.exports = function () {
+  const db = config.get("db");
   mongoose
     .set("strictQuery", true)
-    .connect("mongodb://127.0.0.1:27017/vidly", {
+    .connect(db, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     })
-    .then(() => winston.info("Connected to MongoDB..."));
+    .then(() => winston.info(`Connected to ${db}...`));
 };

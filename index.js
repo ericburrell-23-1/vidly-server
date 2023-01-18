@@ -10,6 +10,8 @@ require("./startup/config")();
 
 // Activate Server
 const port = process.env.PORT || 3000;
-app.listen(port, () =>
+const server = app.listen(port, () =>
   winston.info(`Test API at: localhost:${port}/api/genres`)
 );
+
+module.exports = server;
