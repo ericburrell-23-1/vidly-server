@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const validateRequest = require("../functions/validation");
+const validate = require("../functions/validation");
 const auth = require("../functions/auth");
 const database = require("../functions/database");
 const Movie = require("../models/movie").Model;
@@ -10,14 +10,7 @@ const movieJoiSchema = require("../JoiSchemas/movieSchema");
 // Create the Movies API
 
 // Create route
-router.post("/", auth, (req, res) => {
-  // Validate request
-  const validResult = validateRequest(req.body, movieJoiSchema);
-  if (validResult.error)
-    return res
-      .status(400)
-      .send(`Error: ${validResult.error.details[0].message}.`);
-
+router.post("/", [auth, validate(movieJoiSchema)], (req, res) => {
   // Retrieve the genre for this movie
   database.retrieve(Genre, { _id: req.body.genre }, (movieGenre) => {
     // Check that genre exists
@@ -56,13 +49,7 @@ router.get("/:id", (req, res) => {
 });
 
 // Update route
-router.put("/:id", auth, (req, res) => {
-  const validResult = validateRequest(req.body, movieJoiSchema);
-  if (validResult.error)
-    return res
-      .status(400)
-      .send(`Error: ${validResult.error.details[0].message}.`);
-
+router.put("/:id", [auth, validate(movieJoiSchema)], (req, res) => {
   // Retrieve the genre for this movie
   database.retrieve(Genre, { _id: req.body.genre }, (movieGenre) => {
     // Save new movie

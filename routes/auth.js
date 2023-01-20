@@ -3,17 +3,11 @@ const express = require("express");
 const router = express.Router();
 const _ = require("lodash");
 const bcrypt = require("bcrypt");
-const validateRequest = require("../functions/validation");
+const validate = require("../functions/validation");
 const User = require("../models/user").Model;
 const authJoiSchema = require("../JoiSchemas/authSchema");
 
-router.post("/", async (req, res) => {
-  const validResult = validateRequest(req.body, authJoiSchema);
-  if (validResult.error)
-    return res
-      .status(400)
-      .send(`Error: ${validResult.error.details[0].message}.`);
-
+router.post("/", validate(authJoiSchema), async (req, res) => {
   let user = await User.findOne({ email: req.body.email });
   if (!user) return res.status(400).send("Invalid email or password.");
 

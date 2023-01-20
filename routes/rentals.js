@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const validateRequest = require("../functions/validation");
+const validate = require("../functions/validation");
 const auth = require("../functions/auth");
 const database = require("../functions/database");
 const Customer = require("../models/customer").Model;
@@ -12,13 +12,7 @@ const rentalJoiSchema = require("../JoiSchemas/rentalSchema");
 // const mongoose = require('mongoose');
 // Fawn.init(mongoose);
 
-router.post("/", auth, (req, res) => {
-  // Validate Request
-  const validResult = validateRequest(req.body, rentalJoiSchema);
-  if (validResult.error)
-    return res
-      .status(400)
-      .send(`Error: ${validResult.error.details[0].message}.`);
+router.post("/", [auth, validate(rentalJoiSchema)], (req, res) => {
   // Get movie and customer objects
   database.retrieveMany(
     [Customer, Movie],

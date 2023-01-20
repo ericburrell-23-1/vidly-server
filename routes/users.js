@@ -3,7 +3,7 @@ const router = express.Router();
 const _ = require("lodash");
 const bcrypt = require("bcrypt");
 const database = require("../functions/database");
-const validateRequest = require("../functions/validation");
+const validate = require("../functions/validation");
 const auth = require("../functions/auth");
 const User = require("../models/user").Model;
 const userJoiSchema = require("../JoiSchemas/userSchema");
@@ -15,13 +15,7 @@ router.get("/me", auth, (req, res) => {
   });
 });
 
-router.post("/", async (req, res) => {
-  const validResult = validateRequest(req.body, userJoiSchema);
-  if (validResult.error)
-    return res
-      .status(400)
-      .send(`Error: ${validResult.error.details[0].message}.`);
-
+router.post("/", validate(userJoiSchema), async (req, res) => {
   let user = await User.findOne({ email: req.body.email });
   if (user) return res.status(400).send("User already registered.");
 

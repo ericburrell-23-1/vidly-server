@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const validateRequest = require("../functions/validation");
+const validate = require("../functions/validation");
 const database = require("../functions/database");
 const Customer = require("../models/customer").Model;
 const customerJoiSchema = require("../JoiSchemas/customerSchema");
@@ -8,14 +8,7 @@ const customerJoiSchema = require("../JoiSchemas/customerSchema");
 // Create the Genres API
 
 // Create route
-router.post("/", (req, res) => {
-  // Validate request
-  const validResult = validateRequest(req.body, customerJoiSchema);
-  if (validResult.error)
-    return res
-      .status(400)
-      .send(`Error: ${validResult.error.details[0].message}.`);
-
+router.post("/", validate(customerJoiSchema), (req, res) => {
   // Save new genre
   database.create(Customer, req.body, (result) => res.send(result));
 });
@@ -36,13 +29,7 @@ router.get("/:id", (req, res) => {
 });
 
 // Update route
-router.put("/:id", (req, res) => {
-  const validResult = validateRequest(req.body, customerJoiSchema);
-  if (validResult.error)
-    return res
-      .status(400)
-      .send(`Error: ${validResult.error.details[0].message}.`);
-
+router.put("/:id", validate(customerJoiSchema), (req, res) => {
   database.update(Customer, req.params.id, req.body, (customer) => {
     if (!customer)
       return res.status(404).send("Customer with the given ID not found");

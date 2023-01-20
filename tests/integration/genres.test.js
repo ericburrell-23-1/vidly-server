@@ -187,8 +187,8 @@ describe("/api/genres", () => {
     let _id;
     let token;
 
-    let exec = () => {
-      return request(server)
+    let exec = async () => {
+      return await request(server)
         .delete(`/api/genres/${_id}`)
         .set("x-auth-token", token);
     };

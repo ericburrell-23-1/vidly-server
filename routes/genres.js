@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const validateRequest = require("../functions/validation");
+const validate = require("../functions/validation");
 const auth = require("../functions/auth");
 const admin = require("../functions/admin");
 const database = require("../functions/database");
@@ -15,15 +15,8 @@ const validateObjectId = require("../functions/validateObjectId");
 // Create route
 router.post(
   "/",
-  [auth, admin],
+  [auth, admin, validate(genreJoiSchema)],
   /*asyncMiddleWare(*/ async (req, res) => {
-    // Validate request
-    const validResult = validateRequest(req.body, genreJoiSchema);
-    if (validResult.error)
-      return res
-        .status(400)
-        .send(`Error: ${validResult.error.details[0].message}.`);
-
     // Save new genre
     await database.create(Genre, req.body, (result) => res.send(result));
   } //)
@@ -49,20 +42,18 @@ router.get("/:id", validateObjectId, async (req, res) => {
 });
 
 // Update route
-router.put("/:id", [validateObjectId, auth, admin], async (req, res) => {
-  const validResult = validateRequest(req.body, genreJoiSchema);
-  if (validResult.error)
-    return res
-      .status(400)
-      .send(`Error: ${validResult.error.details[0].message}.`);
-
-  await database.update(Genre, req.params.id, req.body, (genre) => {
-    if (!genre)
-      return res.status(404).send("Genre with the given ID not found");
-    res.send(genre);
-    console.log(genre);
-  });
-});
+router.put(
+  "/:id",
+  [validateObjectId, auth, admin, validate(genreJoiSchema)],
+  async (req, res) => {
+    await database.update(Genre, req.params.id, req.body, (genre) => {
+      if (!genre)
+        return res.status(404).send("Genre with the given ID not found");
+      res.send(genre);
+      console.log(genre);
+    });
+  }
+);
 
 //Delete route
 router.delete("/:id", [validateObjectId, auth, admin], async (req, res) => {

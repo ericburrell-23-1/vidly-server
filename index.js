@@ -7,6 +7,7 @@ require("./startup/validation")();
 require("./startup/routes")(app);
 require("./startup/database")();
 require("./startup/config")();
+require("./startup/prod")(app);
 
 // Activate Server
 const port = process.env.PORT || 3000;
